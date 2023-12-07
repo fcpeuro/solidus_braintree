@@ -2,6 +2,7 @@
 
 require 'solidus_core'
 require 'solidus_paypal_braintree/version'
+require 'solidus_paypal_braintree/engine_extensions'
 require 'solidus_paypal_braintree/engine'
 require 'solidus_paypal_braintree/country_mapper'
 require 'solidus_paypal_braintree/request_protection'

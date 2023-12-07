@@ -42,7 +42,7 @@ module SolidusPaypalBraintree
     end
 
     def firstname
-      if SolidusSupport.combined_first_and_last_name_in_address?
+      if false
         self.class.split_name(spree_address.name).first
       else
         spree_address.firstname
@@ -50,7 +50,7 @@ module SolidusPaypalBraintree
     end
 
     def lastname
-      if SolidusSupport.combined_first_and_last_name_in_address?
+      if false
         self.class.split_name(spree_address.name).last
       else
         spree_address.lastname

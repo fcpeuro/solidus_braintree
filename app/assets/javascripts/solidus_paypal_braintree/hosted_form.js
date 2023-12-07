@@ -7,6 +7,7 @@ SolidusPaypalBraintree.HostedForm.prototype.initialize = function() {
   this.client = SolidusPaypalBraintree.createClient({
     paymentMethodId: this.paymentMethodId,
     useThreeDSecure: (typeof(window.threeDSecureOptions) !== 'undefined'),
+    useDataCollector: (typeof(IS_FRONTEND) !== 'undefined'),
   });
 
   return this.client.initialize().

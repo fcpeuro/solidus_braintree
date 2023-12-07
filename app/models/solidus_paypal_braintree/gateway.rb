@@ -225,7 +225,12 @@ module SolidusPaypalBraintree
 
       source.create_customer!(braintree_customer_id: customer.id).tap do
         if customer.payment_methods.any?
-          source.token = customer.payment_methods.last.token
+          payment_method = customer.payment_methods.last
+          source.token = payment_method.token
+          if payment_method.is_a?(::Braintree::CreditCard)
+            source.last_4 = payment_method.last_4
+            source.unique_number_identifier = payment_method.unique_number_identifier
+          end
         end
 
         source.save!
@@ -344,6 +349,10 @@ module SolidusPaypalBraintree
         params[:payment_method_nonce] = source.nonce
       end
 
+      if source.try(:device_data)
+        params[:device_data] = source.device_data
+      end
+      
       if source.paypal?
         params[:shipping] = braintree_shipping_address(options)
       end

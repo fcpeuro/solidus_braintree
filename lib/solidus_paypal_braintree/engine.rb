@@ -4,7 +4,7 @@ require 'solidus_support'
 
 module SolidusPaypalBraintree
   class Engine < Rails::Engine
-    include SolidusSupport::EngineExtensions
+    include SolidusPaypalBraintree::EngineExtensions
 
     isolate_namespace SolidusPaypalBraintree
     engine_name 'solidus_paypal_braintree'
@@ -20,7 +20,7 @@ module SolidusPaypalBraintree
 
     initializer "register_solidus_paypal_braintree_gateway", after: "spree.register.payment_methods" do |app|
       app.config.spree.payment_methods << SolidusPaypalBraintree::Gateway
-      Spree::PermittedAttributes.source_attributes.concat [:nonce, :payment_type]
+      Spree::PermittedAttributes.source_attributes.concat [:nonce, :payment_type, :device_data]
     end
 
     if SolidusSupport.frontend_available?
