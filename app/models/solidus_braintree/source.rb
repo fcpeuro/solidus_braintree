@@ -15,13 +15,13 @@ module SolidusBraintree
       applepay: 0, bancontact: 1, blik: 2, boleto: 3, card: 4, credit: 5, eps: 6, giropay: 7, ideal: 8,
       itau: 9, maxima: 10, mercadopago: 11, mybank: 12, oxxo: 13, p24: 14, paylater: 15, paypal: 16, payu: 17,
       sepa: 18, sofort: 19, trustly: 20, venmo: 21, verkkopankki: 22, wechatpay: 23, zimpler: 24
-    }, _suffix: :funding
+    }
 
-    belongs_to :user, class_name: ::Spree::UserClassHandle.new, optional: true
+    belongs_to :user, class_name: ::Spree::UserClassHandle.new
     belongs_to :payment_method, class_name: 'Spree::PaymentMethod'
     has_many :payments, as: :source, class_name: "Spree::Payment", dependent: :destroy
 
-    belongs_to :customer, class_name: "SolidusBraintree::Customer", optional: true
+    belongs_to :customer, class_name: "SolidusBraintree::Customer"
 
     validates :payment_type, inclusion: [PAYPAL, APPLE_PAY, VENMO, CREDIT_CARD]
 
@@ -30,11 +30,11 @@ module SolidusBraintree
     scope(:with_payment_profile, -> { joins(:customer) })
     scope(:credit_card, -> { where(payment_type: CREDIT_CARD) })
 
-    delegate :bin, :last_4, :card_type, :expiration_month, :expiration_year, :email,
+    delegate :bin, :card_type, :expiration_month, :expiration_year, :email,
       :username, :source_description, to: :braintree_payment_method, allow_nil: true
 
     # Aliases to match Spree::CreditCard's interface
-    alias_method :last_digits, :last_4
+    
     alias_method :month, :expiration_month
     alias_method :year, :expiration_year
     alias_method :cc_type, :card_type
@@ -42,6 +42,34 @@ module SolidusBraintree
     # we are not currenctly supporting an "imported" flag
     def imported
       false
+    end
+
+    def last_4
+      if credit_card?
+        return self[:last_4] if self[:last_4]
+
+        if braintree_payment_method
+          self[:last_4] = braintree_payment_method.last_4
+          save!
+        end
+
+        self[:last_4]
+      end
+    end
+    alias_method :last_digits, :last_4
+
+    def unique_number_identifier
+      if credit_card?
+        return self[:unique_number_identifier] if self[:unique_number_identifier]
+
+        if braintree_payment_method
+          self[:unique_number_identifier] = braintree_payment_method.unique_number_identifier
+          self[:last_4] = braintree_payment_method.last_4 # Let's also update last_4 to minimize the number of calls to Braintree
+          save!
+        end
+
+        self[:unique_number_identifier]
+      end
     end
 
     def actions
@@ -84,7 +112,7 @@ module SolidusBraintree
     end
 
     def reusable?
-      token.present?
+      token
     end
 
     def credit_card?
@@ -131,5 +159,7 @@ module SolidusBraintree
     def clear_paypal_funding_source
       self.paypal_funding_source = nil
     end
+
+    
   end
 end

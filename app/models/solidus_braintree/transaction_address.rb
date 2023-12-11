@@ -52,7 +52,7 @@ module SolidusBraintree
         zipcode: zip
       )
 
-      if SolidusSupport.combined_first_and_last_name_in_address?
+      if false
         address.name = begin
           if first_name.nil?
             name
