@@ -52,8 +52,8 @@ module SolidusBraintree
       initializer "solidus_braintree_admin_menu_item", after: "register_solidus_braintree_gateway" do
         Spree::Backend::Config.configure do |config|
           config.menu_items << config.class::MenuItem.new(
-            [:braintree],
-            'cc-paypal',
+            label: :braintree,
+            icon: 'ri-paypal-line',
             url: '/solidus_braintree/configurations/list',
             condition: -> { can?(:list, SolidusBraintree::Configuration) }
           )
