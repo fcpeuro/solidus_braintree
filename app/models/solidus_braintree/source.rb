@@ -12,6 +12,7 @@ module SolidusBraintree
     APPLE_PAY = "ApplePayCard"
     VENMO = "VenmoAccount"
     CREDIT_CARD = "CreditCard"
+    GOOGLE_PAY = "AndroidPayCard"
 
     enum :paypal_funding_source, {
       applepay: 0, bancontact: 1, blik: 2, boleto: 3, card: 4, credit: 5, eps: 6, giropay: 7, ideal: 8,
@@ -25,7 +26,7 @@ module SolidusBraintree
 
     belongs_to :customer, class_name: "SolidusBraintree::Customer", optional: true
 
-    validates :payment_type, inclusion: [PAYPAL, APPLE_PAY, VENMO, CREDIT_CARD]
+    validates :payment_type, inclusion: [PAYPAL, APPLE_PAY, VENMO, CREDIT_CARD, GOOGLE_PAY]
 
     before_validation :clear_device_data_if_blank
     before_save :clear_paypal_funding_source, unless: :paypal?
@@ -84,6 +85,10 @@ module SolidusBraintree
 
     def venmo?
       payment_type == VENMO
+    end
+
+    def google_pay?
+      payment_type == GOOGLE_PAY
     end
 
     def reusable?
