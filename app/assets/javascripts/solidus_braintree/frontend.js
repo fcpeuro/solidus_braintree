@@ -13,3 +13,4 @@
 //= require solidus_braintree/paypal_messaging
 //= require solidus_braintree/apple_pay_button
 //= require solidus_braintree/venmo_button
+//= require solidus_braintree/google_pay_button

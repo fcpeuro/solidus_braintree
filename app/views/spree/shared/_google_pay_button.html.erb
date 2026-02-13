@@ -1,0 +1,17 @@
+<div id="google-pay-button" class="google-pay-button"></div>
+
+<script>
+  var googlePayButtonElement = document.getElementById('google-pay-button');
+  var googlePayOptions = {
+    paymentMethodId: <%= id %>,
+    amount: "<%= current_order.total %>",
+    currency: "<%= current_order.currency %>",
+    email: "<%= current_order.email %>",
+    environment: "<%= Rails.env.production? ? 'PRODUCTION' : 'TEST' %>",
+    googleMerchantId: "<%= SolidusBraintree::Gateway.first&.preferred_google_pay_merchant_id %>",
+    buttonColor: "black",
+    buttonType: "pay"
+  };
+  var button = new SolidusBraintree.createGooglePayButton(googlePayButtonElement, googlePayOptions);
+  button.initialize();
+</script>
