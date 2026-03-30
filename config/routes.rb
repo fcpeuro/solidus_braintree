@@ -5,7 +5,7 @@ SolidusBraintree::Engine.routes.draw do
   resource :client_token, only: [:create], format: :json
   resource :transactions, only: [:create]
   namespace :admin do
-    resources :configurations do
+    resources :configurations, controller: 'backend/solidus_braintree/configurations' do
       collection do
         get :list
         post :update
