@@ -54,7 +54,7 @@ module SolidusBraintree
           config.menu_items << config.class::MenuItem.new(
             [:braintree],
             'cc-paypal',
-            url: '/solidus_braintree/configurations/list',
+            url: '/admin/solidus_braintree/configurations/list',
             condition: -> { can?(:list, SolidusBraintree::Configuration) }
           )
         end
