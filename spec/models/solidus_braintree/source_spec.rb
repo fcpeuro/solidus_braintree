@@ -514,6 +514,77 @@ RSpec.describe SolidusBraintree::Source, type: :model do
     end
   end
 
+  describe '#unique_number_identifier' do
+    subject { payment_source.unique_number_identifier }
+
+    let(:method) { new_gateway.tap(&:save!) }
+
+    context 'when source is a credit card' do
+      let(:payment_source) { described_class.create!(payment_type: "CreditCard", payment_method: method) }
+
+      context 'when braintree payment method responds to unique_number_identifier' do
+        let(:braintree_pm) do
+          instance_double(Braintree::CreditCard, unique_number_identifier: 'abc123', last_4: '1234', token: 'tok')
+        end
+
+        before do
+          allow(payment_source).to receive(:braintree_payment_method).and_return(braintree_pm)
+        end
+
+        it 'returns the unique_number_identifier from braintree' do
+          expect(subject).to eq('abc123')
+        end
+
+        it 'persists the value' do
+          subject
+          expect(payment_source[:unique_number_identifier]).to eq('abc123')
+          expect(payment_source[:last_4]).to eq('1234')
+        end
+      end
+
+      context 'when the value is already persisted' do
+        before do
+          payment_source.update_columns(unique_number_identifier: 'persisted123')
+        end
+
+        it 'returns the persisted value without calling braintree' do
+          expect(payment_source).not_to receive(:braintree_payment_method)
+          expect(subject).to eq('persisted123')
+        end
+      end
+    end
+
+    context 'when source is a Google Pay card' do
+      let(:payment_source) { described_class.create!(payment_type: "AndroidPayCard", payment_method: method) }
+
+      context 'when braintree payment method does not respond to unique_number_identifier' do
+        let(:braintree_pm) do
+          instance_double(Braintree::GooglePayCard, last_4: '5678', token: 'google_tok')
+        end
+
+        before do
+          allow(payment_source).to receive(:braintree_payment_method).and_return(braintree_pm)
+        end
+
+        it 'falls back to the token' do
+          expect(subject).to eq('google_tok')
+        end
+
+        it 'persists the fallback value and last_4' do
+          subject
+          expect(payment_source[:unique_number_identifier]).to eq('google_tok')
+          expect(payment_source[:last_4]).to eq('5678')
+        end
+      end
+    end
+
+    context 'when source is not a credit card or Google Pay' do
+      let(:payment_source) { described_class.new(payment_type: "PayPalAccount", payment_method: method) }
+
+      it { is_expected.to be_nil }
+    end
+  end
+
   describe '#display_payment_type' do
     subject { described_class.new(payment_type: type).display_payment_type }
 

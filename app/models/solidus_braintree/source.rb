@@ -64,7 +64,11 @@ module SolidusBraintree
         return self[:unique_number_identifier] if self[:unique_number_identifier]
 
         if braintree_payment_method
-          self[:unique_number_identifier] = braintree_payment_method.unique_number_identifier
+          self[:unique_number_identifier] = if braintree_payment_method.respond_to?(:unique_number_identifier)
+            braintree_payment_method.unique_number_identifier
+          else
+            braintree_payment_method.token
+          end
           self[:last_4] = braintree_payment_method.last_4 # Let's also update last_4 to minimize the number of calls to Braintree
           save!
         end
