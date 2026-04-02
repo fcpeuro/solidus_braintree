@@ -30,7 +30,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_dependency 'activemerchant', '~> 1.48'
-  spec.add_dependency 'braintree', '~> 3.4'
+  spec.add_dependency 'braintree', '>= 3.4'
   spec.add_dependency 'solidus_api', ['>= 2.3.0', '< 5']
   spec.add_dependency 'solidus_core', ['>= 2.3.0', '< 5']
   spec.add_dependency 'solidus_support', ['>= 0.4.1', '< 1']
