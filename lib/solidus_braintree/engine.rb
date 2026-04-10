@@ -50,7 +50,7 @@ module SolidusBraintree
       paths["app/views"] << "lib/views/backend"
 
       initializer "solidus_braintree_admin_menu_item", after: "register_solidus_braintree_gateway" do
-        Spree::Backend::Config.configure do |config|
+        ::Spree::Backend::Config.configure do |config|
           config.menu_items << config.class::MenuItem.new(
             label: :braintree,
             icon: 'ri-paypal-line',
