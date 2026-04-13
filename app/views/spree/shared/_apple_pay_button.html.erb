@@ -16,7 +16,7 @@
       phoneNumber: '<%= address.phone %>',
       addressLines: ['<%= address.address1 %>','<%= address.address2 %>'],
       locality: '<%= address.city %>',
-      administrativeArea: '<%= address.state.name %>',
+      administrativeArea: '<%= address.state&.name || address.state_name %>',
       postalCode: '<%= address.zipcode %>',
       country: '<%= address.country.name %>',
       countryCode: '<%= address.country.iso %>'
