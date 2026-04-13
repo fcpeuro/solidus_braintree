@@ -10,6 +10,11 @@ module SolidusBraintree
     isolate_namespace SolidusBraintree
     engine_name 'solidus_braintree'
 
+    initializer 'solidus_braintree.autoloader' do
+      overrides = root.join('app/overrides')
+      Rails.autoloaders.main.ignore(overrides) if overrides.exist?
+    end
+
     ActiveSupport::Inflector.inflections do |inflect|
       inflect.acronym 'AVS'
     end
