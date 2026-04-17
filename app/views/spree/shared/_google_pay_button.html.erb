@@ -8,7 +8,7 @@
     currency: "<%= current_order.currency %>",
     email: "<%= current_order.email %>",
     environment: "<%= Rails.env.production? ? 'PRODUCTION' : 'TEST' %>",
-    googleMerchantId: "<%= SolidusBraintree::Gateway.first&.preferred_google_pay_merchant_id %>",
+    googleMerchantId: "<%= SolidusBraintree::Gateway.active.first&.preferred_google_pay_merchant_id %>",
     buttonColor: "black",
     buttonType: "pay"
   };
