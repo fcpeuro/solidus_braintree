@@ -34,6 +34,13 @@ gem 'async', '< 3' if Gem::Version.new(RUBY_VERSION) < Gem::Version.new('3')
 
 gemspec
 
+# Allow CI (and local testing) to pin a specific braintree version so we can
+# exercise the extension against both supported major versions (3.x and 4.x).
+# This intersects with the constraint declared in the gemspec.
+if (braintree_version = ENV.fetch('BRAINTREE_VERSION', nil)) && braintree_version.match?(/\d/)
+  gem 'braintree', braintree_version
+end
+
 # Use a local Gemfile to include development dependencies that might not be
 # relevant for the project or for other contributors, e.g. pry-byebug.
 #

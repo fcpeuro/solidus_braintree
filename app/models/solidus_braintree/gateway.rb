@@ -18,7 +18,6 @@ module SolidusBraintree
 
     ALLOWED_BRAINTREE_OPTIONS = [
       :device_data,
-      :device_session_id,
       :merchant_account_id,
       :order_id
     ].freeze
