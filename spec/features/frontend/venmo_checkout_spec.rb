@@ -118,7 +118,7 @@ describe "Checkout", type: :feature, js: true do
         finalize_checkout
         go_to_payment_checkout_page(order_number: 'R300000002')
 
-        expect(Spree::User.first.wallet.wallet_payment_sources).not_to be_empty
+        expect(user.reload.wallet.wallet_payment_sources).not_to be_empty
         expect(page).to have_selector('#existing_cards')
         expect(page).to have_content('venmojoe')
 
@@ -143,9 +143,8 @@ describe "Checkout", type: :feature, js: true do
 
     allow_any_instance_of(Spree::CheckoutController).to receive_messages(current_order: order)
 
-    first_user = Spree::User.first
-    allow_any_instance_of(Spree::CheckoutController).to receive_messages(try_spree_current_user: first_user)
-    allow_any_instance_of(Spree::CheckoutController).to receive_messages(spree_current_user: first_user)
+    allow_any_instance_of(Spree::CheckoutController).to receive_messages(try_spree_current_user: user)
+    allow_any_instance_of(Spree::CheckoutController).to receive_messages(spree_current_user: user)
 
     allow_any_instance_of(Spree::Payment).to receive(:gateway_order_id).and_return(order_number)
 

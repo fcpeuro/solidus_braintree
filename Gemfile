@@ -3,11 +3,11 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-branch = ENV.fetch('SOLIDUS_BRANCH', 'master')
+branch = ENV.fetch('SOLIDUS_BRANCH', 'v4.6')
 gem 'solidus', github: 'solidusio/solidus', branch: branch
 
 # The solidus_frontend gem has been pulled out since v3.2
-gem 'solidus_frontend', github: 'solidusio/solidus_frontend' if branch == 'master'
+gem 'solidus_frontend', github: 'solidusio/solidus_frontend' if branch == 'main'
 gem 'solidus_frontend' if branch >= 'v3.2' # rubocop:disable Bundler/DuplicatedGem
 
 # Needed to help Bundler figure out how to resolve dependencies,
@@ -31,6 +31,9 @@ end
 # the 'async' gem that relies on the latest ruby, since RubyGems doesn't
 # resolve gems based on the required ruby version.
 gem 'async', '< 3' if Gem::Version.new(RUBY_VERSION) < Gem::Version.new('3')
+
+# json 3 dropped the quirks_mode option that ActiveSupport 8.0 still passes.
+gem 'json', '< 3'
 
 gemspec
 

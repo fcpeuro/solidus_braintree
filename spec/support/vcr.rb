@@ -10,7 +10,6 @@ VCR.configure do |c|
   }
   c.allow_http_connections_when_no_cassette = false
   c.ignore_localhost = true
-  c.ignore_hosts 'chromedriver.storage.googleapis.com'
 
   # client token used for the fronted JS lib cannot be mocked:
   # it contains a cryptographically signed string containing the merchant id
@@ -35,8 +34,4 @@ VCR.configure do |c|
 
     !r1_resource.nil? && r1_resource == r2_resource
   end
-
-  # https://github.com/titusfortner/webdrivers/wiki/Using-with-VCR-or-WebMock
-  driver_hosts = Webdrivers::Common.subclasses.map { |driver| URI(driver.base_url).host }
-  c.ignore_hosts(*driver_hosts)
 end
